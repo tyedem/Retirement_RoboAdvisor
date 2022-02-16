@@ -12,6 +12,20 @@ def parse_int(n):
     except ValueError:
         return float("nan")
 
+def risk_type(intent_request):
+    if intent_request == 'None':
+        return '100% bonds(AGG), 0% equities(SPY)'
+    elif intent_request == 'Very Low':
+        return '80% bonds (AGG), 20% equities (SPY)'
+    elif intent_request == 'Low':
+        return '60% bonds (AGG), 40% equities (SPY)'
+    elif intent_request == 'Medium':
+        return '40% bonds (AGG), 60% equities (SPY)'
+    elif intent_request == 'High':
+        return '20% bonds (AGG)m 80% equities (SPY)'
+    elif intent_request == 'Very High':
+        return '0% bonds (AGG), 100% equities (SPY)'
+
 
 def build_validation_result(is_valid, violated_slot, message_content):
     """
