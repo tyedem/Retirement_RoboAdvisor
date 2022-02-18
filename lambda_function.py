@@ -1,5 +1,7 @@
 ### Required Libraries ###
 from datetime import datetime
+from functools import cached_property
+from xmlrpc.client import _datetime_type
 from dateutil.relativedelta import relativedelta
 
 ### Functionality Helper Functions ###
@@ -11,7 +13,7 @@ def parse_int(n):
         return int(n)
     except ValueError:
         return float("nan")
-
+        
 def risk_type(intent_request):
     if intent_request == 'None':
         return '100% bonds(AGG), 0% equities(SPY)'
@@ -26,7 +28,6 @@ def risk_type(intent_request):
     elif intent_request == 'Very High':
         return '0% bonds (AGG), 100% equities (SPY)'
 
-
 def build_validation_result(is_valid, violated_slot, message_content):
     """
     Define a result message structured as Lex response.
@@ -39,7 +40,33 @@ def build_validation_result(is_valid, violated_slot, message_content):
         "violatedSlot": violated_slot,
         "message": {"contentType": "PlainText", "content": message_content},
     }
-
+def validation_data(age, investment_amount, intent_request):
+    '''Validates the data provided by the user'''
+    # Validate that the user is greater than 0 years old or less than 65 years old
+    if age is not None:
+        birth_date = datetime.strptime(age, '%Y-%m-%d')
+        age = relativedelta(datetime.now(), birth_date).years
+        if age < 18:
+            return build_validation_result(
+                False,
+                'age',
+                'You should be greater than 0 or less than 65 years old to use this service, '
+                'please provide a different date of birth.',
+            )
+    # Validate the investment amount is => 5000
+    if cad_amount is not None:
+        cad_amount = parse_float(
+            cad_amount
+        ) # Cast string to values
+        if cad_amount <= 5000:
+            return build_validation_result(
+                False,
+                'cadAmount',
+                'The amount invest should be greater than zero, '
+                'please adjust your investment amount.'
+            )
+    # A True result is returned if age or amount are valid
+    return build_validation_result(True, None, None)
 
 ### Dialog Actions Helper Functions ###
 def get_slots(intent_request):
@@ -110,10 +137,22 @@ def recommend_portfolio(intent_request):
         # Perform basic validation on the supplied input slots.
         # Use the elicitSlot dialog action to re-prompt
         # for the first violation detected.
+        # Get all the slots
+        slots = get_slots(intent_request)
+        
+        #Validate user input using the validate_data function
+        validation_result = validation_data(age, investment_amount, intent_request)
+        if not validation_result['isValid']:
+            slots[validation_result['violatedSlot']] = None #Cleans invalid slot
 
-        ### YOUR DATA VALIDATION CODE STARTS HERE ###
-
-        ### YOUR DATA VALIDATION CODE ENDS HERE ###
+       # Returns an elicitSlot dialogue to request new data for the invalid slot
+            return elicit_slot(
+                intent_request['sessionAttributes'],
+                intent_request['currentIntent']['name'],
+                slots,
+                validation_result['violatedSlot'],
+                validation_result['message']
+            )
 
         # Fetch current session attibutes
         output_session_attributes = intent_request["sessionAttributes"]
@@ -121,8 +160,19 @@ def recommend_portfolio(intent_request):
         return delegate(output_session_attributes, get_slots(intent_request))
 
     # Get the initial investment recommendation
-
-    ### YOUR FINAL INVESTMENT RECOMMENDATION CODE STARTS HERE ###
+def recommend_portfolio(intent_request):
+    # Dialogue management
+    source = intent_request['invocationSource']
+    #Get invocation source for dialogues
+    if source == 'DialogCodeHook'
+    # Validate inputs - Get all slots
+    slots = get_slots(intent_request)
+    # Get session attributes
+    output_session_attributes = intent_request['sessionAttributes']
+    # Return delegate dialogue to choose next action
+    return delegate(output_session_attributes), get_slots(intent_request))
+    
+    recommend_portfolio = risk_type(intent_request)
 
     ### YOUR FINAL INVESTMENT RECOMMENDATION CODE ENDS HERE ###
 
