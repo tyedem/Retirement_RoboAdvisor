@@ -131,27 +131,9 @@ def recommend_portfolio(intent_request):
 
         # Gets all the slots
         slots = get_slots(intent_request)
-
-        # Validate age is greater than 0 years old and less than 65 years old
-        if age is not None:
-            if parse_int(age) <= 0 or parse_int(age) >= 65:
-                return build_validation_result(
-                        False,
-                        'age',
-                        'You should be greater than 0 or less than 65 years old to use this service, please confirm a different age.'
-                    )
-            #Validate investment amount is equal to or greater than 5000
-            if investment_amount is not None:
-                investment_amount = float(investment_amount)
-            if investment_amount < 5000:
-                return build_validation_result(
-                    False,
-                    'InvestmentAmount',
-                    'The amount you invest should be greater than 5000, please adjust your investment amount.'
-                )
+        validation_result = validate_data(age, investment_amount, intent_request)
         # If the data provided by the user is not valid,
         # the elicitSlot dialog action is used to re-prompt for the first violation detected.
-        validation_result = build_validation_result(True, None, None)   
         if not validation_result["isValid"]:
             slots[validation_result["violatedSlot"]] = None  # Cleans invalid slot
         
