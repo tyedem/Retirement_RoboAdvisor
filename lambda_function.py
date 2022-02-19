@@ -16,7 +16,7 @@ def parse_int(n):
 
 def investment_recommendation(risk_level):
     if risk_level == 'None':
-        initial_recommendation = '100% bonds(AGG), 0% equities(SPY)'
+        initial_recommendation = '100% bonds(AGG), 0% equities (SPY)'
     elif risk_level == 'Very Low':
         initial_recommendation = '80% bonds (AGG), 20% equities (SPY)'
     elif risk_level == 'Low':
@@ -111,6 +111,8 @@ def validate_data (age, investment_amount, intent_request):
                 'InvestmentAmount',
                 'The amount you invest should be greater than 5000, please adjust your investment amount.'
             )
+    return build_validation_result(True, None, None)
+
 ### Intents Handlers ###
 def recommend_portfolio(intent_request):
     """
@@ -150,7 +152,7 @@ def recommend_portfolio(intent_request):
 
         return delegate(output_session_attributes, get_slots(intent_request))
     initial_recommendation = investment_recommendation(risk_level)
-    
+
     # Return a message with the initial recommendation based on the risk level.
     return close(
         intent_request["sessionAttributes"],
