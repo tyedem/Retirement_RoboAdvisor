@@ -96,7 +96,7 @@ def close(session_attributes, fulfillment_state, message):
 def validate_data (age, investment_amount, intent_request):
     # Validate age is greater than 0 years old and less than 65 years old
     if age is not None:
-        if parse_int(age) >= 0 or parse_int(age) >= 65:
+        if parse_int(age) <= 0 or parse_int(age) >= 65:
             return build_validation_result(
                 False,
                 'age',
@@ -149,65 +149,8 @@ def recommend_portfolio(intent_request):
         output_session_attributes = intent_request["sessionAttributes"]
 
         return delegate(output_session_attributes, get_slots(intent_request))
-
-def validate_data (age, investment_amount, intent_request):
-        
-    # Validate age is greater than 0 years old and less than 65 years old
-    if age is not None:
-        if parse_int(age) <= 0 or parse_int(age) >= 65:
-            return build_validation_result(
-                False,
-                'age',
-                'You should be greater than 0 or less than 65 years old to use this service, please confirm a different age.'
-            )
-            
-    #Validate investment amount is equal to or greater than 5000
-    if investment_amount is not None:
-        investment_amount = parse_int(investment_amount)
-        if investment_amount < 5000:
-            return build_validation_result(
-                False,
-                'InvestmentAmount',
-                'The amount you invest should be greater than zero, please adjust your investment amount.'
-            )
-
-    return build_validation_result(True, None, None)
-
-def recommend_portfolio (intent_request):
-
-    """
-    Performs dialog management and fulfillment for recommending a portfolio.
-    """
-    
-    first_name = get_slots(intent_request)["firstName"]
-    age = get_slots(intent_request)["age"]
-    investment_amount = get_slots(intent_request)["investmentAmount"]
-    risk_level = get_slots(intent_request)["riskLevel"]
-    source = intent_request["invocationSource"] # Gets the invocation source, for Lex dialogs 'DialogCodeHook' is expected
-    
-    if source == "DialogCodeHook":
-        slots = get_slots(intent_request)
-
-        validation_result = validate_data(age, investment_amount, intent_request)
-        if not validation_result["isValid"]:
-            slots[validation_result["violatedSlot"]] = None  # Cleans invalid slot
-
-            # Returns an elicitSlot dialog to request new data for the invalid slot
-            return elicit_slot(
-                intent_request["sessionAttributes"],
-                intent_request["currentIntent"]["name"],
-                slots,
-                validation_result["violatedSlot"],
-                validation_result["message"],
-            )
-        
-        # Fetch current session attributes
-        output_session_attributes = intent_request["sessionAttributes"]
-        
-        return delegate(output_session_attributes, get_slots(intent_request))
-
     initial_recommendation = investment_recommendation(risk_level)
-   
+    
     # Return a message with the initial recommendation based on the risk level.
     return close(
         intent_request["sessionAttributes"],
