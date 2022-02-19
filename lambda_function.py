@@ -16,7 +16,7 @@ def parse_int(n):
 
 def investment_recommendation(risk_level):
     if risk_level == 'None':
-        initial_recommendation = '100% bonds(AGG), 0% equities (SPY)'
+        initial_recommendation = '100% bonds (AGG), 0% equities (SPY)'
     elif risk_level == 'Very Low':
         initial_recommendation = '80% bonds (AGG), 20% equities (SPY)'
     elif risk_level == 'Low':
