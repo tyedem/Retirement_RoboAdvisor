@@ -8,7 +8,7 @@
 
 ### Background
 
-Both machine learning and NLP are discrupting finance to improve customer service. robo advisors are an application that are surely making an impact across the industry. Here I have created a robo advisor leveraging Amazon Web Services via Lex and Lambda that could be used by customers to get investment portfolio recommendations for retirement.
+Both machine learning and NLP are disrupting finance to improve customer service. Robo advisors are an application that is surely making a major impact across the industry. Here I have created a robo advisor leveraging Amazon Web Services via Lex and Lambda that could be used by customers to get investment portfolio recommendations for retirement.
 
 This repo contains the following:
 1) RoboAdvisor Lex bot zip file
