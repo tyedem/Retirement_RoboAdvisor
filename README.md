@@ -18,4 +18,4 @@ This repo contains the following:
 
 # RoboAdvisor Demo
 
-![RoboAdvisor Test](images/RoboAdvisor.gif)
+![RoboAdvisor Test](https://github.com/tyedem/Retirement_RoboAdvisor/blob/main/Images/RoboAdvisor.gif?raw=true)
